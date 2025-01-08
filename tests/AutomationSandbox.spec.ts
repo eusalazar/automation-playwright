@@ -16,6 +16,7 @@ import { test, expect, Browser, Page } from '@playwright/test';
 
       await test.step('Click en boton con ID dinamico', async () => {
         await page.getByRole('button', { name: 'Hacé click para generar un ID' }).click()
+        await expect(page.getByRole('button', { name: 'Hacé click para generar un ID' })).toBeVisible();
 
       });  
     })
@@ -26,8 +27,11 @@ import { test, expect, Browser, Page } from '@playwright/test';
       await page.goto('https://thefreerangetester.github.io/sandbox-automation-testing/')
      });
 
-     await test.step('Puedo ingresar tetxo en el campo en un Aburrido texto', async () => {
+     await test.step('Puedo ingresar texto en el campo en un Aburrido texto', async () => {
+      await expect(page.getByPlaceholder('Ingresá texto'), `El campo de texto no admite ediciòn`).toBeEditable();
       await page.getByPlaceholder('Ingresá texto').fill(fieldText);
+      await expect(page.getByPlaceholder('Ingresá texto'), `El campo de texto no admite ediciòn`).toHaveValue(fieldText);
+
 
      }); 
 
@@ -57,9 +61,10 @@ import { test, expect, Browser, Page } from '@playwright/test';
        await page.goto('https://thefreerangetester.github.io/sandbox-automation-testing/')
       });
 
-      await test.step('Puedo ingresar tetxo en el campo en un Aburrido texto', async () => {
+      await test.step('Puedo ingresar texto en el campo en un Aburrido texto', async () => {
         const radioButton = await page.getByLabel('No')
         await radioButton.check();
+        await expect(page.getByLabel('No'), `El radio button no se seleccionò`).toBeChecked();
 
         const isChecked = await radioButton.isChecked();
         expect(isChecked).toBe(true);
@@ -68,19 +73,29 @@ import { test, expect, Browser, Page } from '@playwright/test';
 
      });
 
-     test("Puedo seleccionar un deporte en el dropdwn ", async ({ page }) => {
-      await test.step('Navego al Sandbox de Automation de Free Range Testers', async () => {
-       await page.goto('https://thefreerangetester.github.io/sandbox-automation-testing/')
-      });
+     test('Los items del dropdown son los esperados', async ({ page }) => {
+      await test.step('Dado que navego al Sandbox de Automation de Free Range Testers', async () => {
+          await page.goto('https://thefreerangetester.github.io/sandbox-automation-testing/');
+      })
+      await test.step('Valido que la lista del dropdown contiene los deportes esperados', async () => {
+          const deportes = ['Fútbol', 'Tennis', 'Basketball']
 
-      await test.step('Selecciona un deporte del dropdwn', async () => {
-        await page.getByLabel('Dropdown').selectOption('Fútbol');
-      
-      }); 
+          for (let opcion of deportes) {
+              const element = await page.$(`select#formBasicSelect > option:is(:text("${opcion}"))`);
+              if (element) {
+                  console.log(`La opción '${opcion}' está presente.`);
+              } else {
+                  throw new Error(`La opción '${opcion}' no está presente.`);
+              }
+          }
 
-     });
+      })
 
-     test("Puedo seleccionar un dia de la semana en el dropdwn Dias de la seman", async ({ page }) => {
+
+  })
+
+
+     test("Puedo seleccionar un dia de la semana en el dropdown Dias de la semana", async ({ page }) => {
       await test.step('Navego al Sandbox de Automation de Free Range Testers', async () => {
         await page.goto('https://thefreerangetester.github.io/sandbox-automation-testing/')
 
@@ -91,11 +106,9 @@ import { test, expect, Browser, Page } from '@playwright/test';
         await page.getByRole('link', { name: 'Martes' }).click()
 
       }); 
-       
-      
+        
      });
-
-
+     
   })
   
 })()
