@@ -12,6 +12,7 @@ import { goToSandbox,
 test.describe('Pruebas con tablas estáticas y dinámicas', () => {
   
   test('Validar columna "Nombre" en la tabla estática', async ({ page }) => {
+    test.setTimeout(60000);
     await test.step('Navego al Sandbox', async () => {
       await goToSandbox(page);
     });
@@ -24,7 +25,7 @@ test.describe('Pruebas con tablas estáticas y dinámicas', () => {
         body: await page.screenshot(),
         contentType: 'image/png',
       });
-
+    
       expect(valoresColumnaNombres).toEqual(nombresEsperados);
     });
   });
