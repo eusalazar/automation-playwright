@@ -27,6 +27,31 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'Computadora',
+      testMatch: "/*.spec.ts",
+      use: { ...devices['Desktop Chrome'] },
+    },
+
+    {
+      name: 'Iphone',
+      testMatch: "/*.spec.ts",
+      use: { ...devices['iPhone 15'] },
+    },
+
+    {
+      name: 'API Tests',
+      testMatch: 'APITests/**/*',
+      use: { 
+        baseURL: 'https://api.github.com',
+         extraHTTPHeaders: {
+           'Accept': 'application/vnd.github.v3+json',
+           'Authorization': `token ${process.env.API_TOKEN}`
+        }
+        
+       }
+    },
+
+    {
       name: 'chromium',
       use: { 
         ...devices['Desktop Chrome'], 
